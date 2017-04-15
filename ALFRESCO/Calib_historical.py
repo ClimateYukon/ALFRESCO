@@ -30,7 +30,7 @@ if not os.path.exists( json_path ):
     os.makedirs( json_path )
 
 obs_json_fn = os.path.join( json_path, 'Observed.json' )
-
+#try
 suffix = 'historical'
 #run historical
 pp_hist = ap.run_postprocessing_historical( historical_maps_path, obs_json_fn, ncores, ap.veg_name_dict, subdomains_fn, id_field, name_field)
