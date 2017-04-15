@@ -1,0 +1,1 @@
+python /workspace/Shared/Users/jschroder/Github/TRY/New_historical.py -p '/atlas_scratch/apbennett/IEM/FinalCalib/' -shp '/workspace/Shared/Users/jschroder/TMP/IEM_Boreal/IEM_Boreal.shp' -field 'OBJECTID' -name 'Name' -o '/workspace/Shared/Users/jschroder/TMP/FireHistory/'
