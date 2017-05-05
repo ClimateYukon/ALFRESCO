@@ -1,4 +1,5 @@
-
+#Set of plots aimed at comparing different variables
+#Todo : find a way to compare plots
 import pandas as pd
 import numpy as np
 import glob, os, ast, sys,argparse
