@@ -1,8 +1,7 @@
-# import library
+#Official ALFRESCO PP launcher, needs to be updated to include csv TRUE/FALSE and historical TRUE/FALSE
 import alfresco_postprocessing as ap
 from tinydb import TinyDB, Query
 import os, argparse, json
-# from alfresco_postprocessing import Calib_plotting as CP
 
 parser = argparse.ArgumentParser( description='' )
 parser.add_argument( "-p", "--base_path", action='store', dest='base_path', type=str, help="path to output directory" )
@@ -37,17 +36,17 @@ if hist==True:
     pp_hist = ap.run_postprocessing_historical( historical_maps_path, obs_json_fn, ncores, ap.veg_name_dict, args.shp, args.id_field, args.name)
     pp_hist.close()
 
-# metrics = ['avg_fire_size','number_of_fires','all_fire_sizes','total_area_burned' ,"veg_counts" , "severity_counts"]
-# suffix = os.path.split(base_path)[1]
+metrics = ['avg_fire_size','number_of_fires','all_fire_sizes','total_area_burned' ,"veg_counts" , "severity_counts"]
+suffix = os.path.split(base_path)[1]
 
-# mod_json_fn = os.path.join( json_path,'_'.join([ suffix + '.json'  ]))
-# maps_path = os.path.join(base_path,  'Maps')
+mod_json_fn = os.path.join( json_path,'_'.join([ suffix + '.json'  ]))
+maps_path = os.path.join(base_path,  'Maps')
 
-# pp = ap.run_postprocessing( maps_path, mod_json_fn, ncores , ap.veg_name_dict ,args.shp, args.id_field, args.name )
+pp = ap.run_postprocessing( maps_path, mod_json_fn, ncores , ap.veg_name_dict ,args.shp, args.id_field, args.name )
 
-# if csv==True:
-# 	_ = ap.to_csvs( pp, metrics, csv_path, suffix )
+if csv==True:
+	_ = ap.to_csvs( pp, metrics, csv_path, suffix )
 
-# pp.close()
+pp.close()
 
-# _plot = ap.launcher_SERDP( obs_json_fn , args.out, suffix , args.out)
+_plot = ap.launcher_SERDP( obs_json_fn , args.out, suffix , args.out)
