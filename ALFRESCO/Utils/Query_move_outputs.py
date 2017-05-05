@@ -1,3 +1,5 @@
+#This script is used to query outputs files, when using the full shapefile, the amount of folders/plots is too high for manual exploration
+
 import os,glob
 path = '/atlas_scratch/jschroder/ALF_outputs/PP_2017-04-26-16-49/'
 import shutil
