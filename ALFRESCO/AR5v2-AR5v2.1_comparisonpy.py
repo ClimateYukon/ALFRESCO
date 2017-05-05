@@ -1,4 +1,5 @@
-
+#This version of Plotting was used to compared AR5v2 and AR5v2.1 ALFRESCO run
+#Providing a set of Plots to identify the differences
 import pandas as pd
 import numpy as np
 import glob, os, ast, sys,argparse
@@ -258,12 +259,9 @@ def compare_metric(mod_obj , observed , output_path , pdf, model , graph_variabl
 
 def compare_vegcounts(mod_obj  , observed , output_path , pdf, model , graph_variable,year_range , domain , *args):
 
-
 	begin, end = year_range #subset the dataframes to the years of interest
 
 	for veg_name in mod_obj[0].veg_counts[domain].keys():
-
-
 
 		if len(mod_obj)==1 :
 			sub = '\n {} - {} \n'.format(mod_obj[0].model,mod_obj[0].mscenario)
@@ -332,8 +330,6 @@ def CD_ratio(mod_obj , observed , output_path , pdf, model , graph_variable, yea
 	pdf.savefig()
 	plt.close()
 
-
-
 def launcher_SERDP(obs_json_fn, paths, labels, colors, model , out ) :
 	print 'launching'
 	mod_obj_fn = [os.path.join(path , 'JSON' , model + '.json' ) for path in paths  ]
@@ -345,10 +341,8 @@ def launcher_SERDP(obs_json_fn, paths, labels, colors, model , out ) :
 
 	for domain in mod_obj[0].domains:
 		 
-		try:
-		    os.makedirs(os.path.join( output_path, domain))
-		except OSError:
-		    pass
+		try: os.makedirs(os.path.join( output_path, domain))
+		except OSError : pass
 
 
 		pdf = os.path.join( output_path, '_'.join([ model, domain ,'plots']) + '.pdf' )
@@ -370,44 +364,3 @@ def launcher_SERDP(obs_json_fn, paths, labels, colors, model , out ) :
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-path2 = '/atlas_scratch/jschroder/ALF_outputs/PP_2017-05-01-12-23'
-
-path1 = '/atlas_scratch/jschroder/ALF_outputs/PP_2017-04-26-16-49'
-obs_json_fn = '/atlas_scratch/jschroder/ALF_outputs/PP_2017-05-01-12-23/JSON/Observed.json'
-labels = ['AR5 V2','AR5 V2.1']
-colors = ['#6c2436','#00ad5e']
-out = '/workspace/Shared/Users/jschroder/TMP/try/'
-models = os.listdir('/atlas_scratch/jschroder/ALF_outputs/PP_2017-05-01-12-23/JSON/')
-
-models = models[:-1]
-
-models = [m[:-5]for m in models]
-
-
-paths = [path1]+[path2]
-from pathos.multiprocessing import ProcessingPool
-pool = ProcessingPool(nodes=15)
-r = pool.map(launcher_SERDP ,[obs_json_fn]*15,[paths]*15,[labels]*15,[colors]*15,models,[out]*15)
