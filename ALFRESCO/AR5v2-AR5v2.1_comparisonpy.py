@@ -222,8 +222,8 @@ def compare_metric(mod_obj , observed , output_path , pdf, model , graph_variabl
 
 
 	fig, ax = plt.subplots() 
-	_ = [df_processing2( scen_arg.__dict__[graph_variable][domain].ix[begin : end], False, cumsum ).plot(ax=ax,legend=False, color = scen_arg.color, title=plot_title,lw = 0.7,alpha=0.1, grid=False )for scen_arg in mod_obj]
-	_ = [df_processing2( scen_arg.__dict__[graph_variable][domain].ix[begin : end], False, cumsum ).mean(axis=1).plot(ax=ax,legend=False, color = scen_arg.color, title=plot_title,lw = 0.7,  grid=False )for scen_arg in mod_obj]
+	_ = [df_processing2( scen_arg.__dict__[graph_variable][domain].ix[begin : end], False, cumsum ).plot(ax=ax,legend=False, color = scen_arg.color, title=plot_title,lw = 0.4,alpha=0.05, grid=False )for scen_arg in mod_obj]
+	_ = [df_processing2( scen_arg.__dict__[graph_variable][domain].ix[begin : end], False, cumsum ).mean(axis=1).plot(ax=ax,legend=False, color = scen_arg.color, title=plot_title,lw = 1,  grid=False )for scen_arg in mod_obj]
 
 	obs_domain.plot( ax=ax,legend=False, color=observed.color, grid=False, label= "observed" ,lw = 1)
 
@@ -333,9 +333,9 @@ def CD_ratio(mod_obj , observed , output_path , pdf, model , graph_variable, yea
 def launcher_SERDP(obs_json_fn, paths, labels, colors, model , out ) :
 	print 'launching'
 	mod_obj_fn = [os.path.join(path , 'JSON' , model + '.json' ) for path in paths  ]
-	mod_obj = [Scenario( json, model, label, model , color) for json, label , model, color in zip(mod_obj_fn, labels ,[model]*len(mod_obj_fn), colors)]
+	mod_obj = [Scenario( json, model, label, label + " "+ model, color) for json, label , model, color in zip(mod_obj_fn, labels ,[model]*len(mod_obj_fn), colors)]
 
-	hist_obj = Scenario( obs_json_fn, model, 'Observed', "Historical", '#B22222' )
+	hist_obj = Scenario( obs_json_fn, model, 'Observed', "Historical", '#000000' )
 
 	output_path = os.path.join( out , 'Plots_SERDP' , model )
 
@@ -361,6 +361,28 @@ def launcher_SERDP(obs_json_fn, paths, labels, colors, model , out ) :
 			try :
 				compare_vegcounts(mod_obj  , hist_obj , output_path , pdf, model , 'veg_counts', year_range, domain)
 			except : pass
+
+
+path1 = '/atlas_scratch/jschroder/ALF_outputs/PP_2017-04-26-16-49'
+
+path2 = '/atlas_scratch/jschroder/ALF_outputs/PP_2017-05-15-13-57'
+obs_json_fn = '/atlas_scratch/jschroder/ALF_outputs/PP_2017-05-01-12-23/JSON/Observed.json'
+labels = ['AR5 V2 CRU323','AR5 V2.1 CRU40']
+colors = ['#6c2436','#00ad5e']
+out = '/workspace/Shared/Users/jschroder/TMP/CRU323-CRU4_comparison-v3/'
+models = os.listdir('/atlas_scratch/jschroder/ALF_outputs/PP_2017-05-01-12-23/JSON/')
+
+models = models[:-1]
+
+models = [m[:-5]for m in models]
+
+
+paths = [path1]+[path2]
+from pathos.multiprocessing import ProcessingPool
+pool = ProcessingPool(nodes=15)
+r = pool.map(launcher_SERDP ,[obs_json_fn]*15,[paths]*15,[labels]*15,[colors]*15,models,[out]*15)
+
+
 
 
 
