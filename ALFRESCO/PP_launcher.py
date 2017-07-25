@@ -14,7 +14,7 @@ parser.add_argument( "-cores", "--ncores", action='store', dest='ncores', type=i
 parser.add_argument( "-csv", "--csv", action='store', dest='csv', type=bool, help="Compute CSV" )
 parser.add_argument( "-hist", "--hist", action='store', dest='hist', type=bool, help="Compute historical" )
 parser.add_argument( "-met", "--metrics", action='store', dest='metrics', type=str, help="metric list" ,nargs="+")
-
+parser.add_argument( "-plot", "--plot", action='store', dest='plot', type=bool, help="Compute Plots only" )
 args = parser.parse_args()
 ncores=args.ncores
 base_path = args.base_path
@@ -32,23 +32,23 @@ if not os.path.exists( csv_path ):
 
 historical_maps_path=args.hist_path
 obs_json_fn = os.path.join( json_path, 'Observed.json' )
+if args.plot != True :
+    #run historical
+    if args.hist==True:
+        if not os.path.isfile(obs_json_fn) :
+    	    pp_hist = ap.run_postprocessing_historical( historical_maps_path, obs_json_fn, ncores, ap.veg_name_dict, args.shp, args.id_field, args.name)
+    	    pp_hist.close()
 
-#run historical
-if args.hist==True:
-    if not os.path.isfile(obs_json_fn) :
-	    pp_hist = ap.run_postprocessing_historical( historical_maps_path, obs_json_fn, ncores, ap.veg_name_dict, args.shp, args.id_field, args.name)
-	    pp_hist.close()
+    metrics = args.metrics
+    suffix = os.path.split(base_path)[1]
+    mod_json_fn = os.path.join( json_path,'_'.join([ suffix + '.json'  ]))
+    maps_path = os.path.join(base_path,  'Maps')
 
-metrics = args.metrics
-suffix = os.path.split(base_path)[1]
-mod_json_fn = os.path.join( json_path,'_'.join([ suffix + '.json'  ]))
-maps_path = os.path.join(base_path,  'Maps')
+    pp = ap.run_postprocessing( maps_path, mod_json_fn, ncores , ap.veg_name_dict ,args.shp, args.id_field, args.name )
 
-pp = ap.run_postprocessing( maps_path, mod_json_fn, ncores , ap.veg_name_dict ,args.shp, args.id_field, args.name )
+    if args.csv==True:
+    	_ = ap.to_csvs( pp, metrics, csv_path, suffix )
 
-if args.csv==True:
-	_ = ap.to_csvs( pp, metrics, csv_path, suffix )
-
-pp.close()
+    pp.close()
 
 _plot = ap.launcher_SERDP( obs_json_fn , args.out, suffix , args.out)
